@@ -2,13 +2,15 @@ parser: "@typescript-eslint/parser"
 extends:
   - "eslint:recommended"
   - "plugin:@typescript-eslint/recommended"
+  - "prettier"
 plugins:
   - "@typescript-eslint"
+  - "prettier"
 root: true
 rules: 
-  indent:
-  - error
-  - 2
+  # indent:
+  # - error
+  # - 2
   linebreak-style:
   - error
   - unix
@@ -175,3 +177,5 @@ rules:
   - warn
   - allow:
     - constructors
+  "@typescript-eslint/no-explicit-any": 
+  - warn
