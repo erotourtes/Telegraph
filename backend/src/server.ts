@@ -1,7 +1,22 @@
 import dotenv from "dotenv";
 import app from "./app.js";
+import mysql from "mysql2";
 
 dotenv.config();
+
+
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+});
+
+
+connection.connect((err) => {
+  if (err) throw err;
+
+  console.log("Connected!");
+});
 
 const PORT = process.env.PORT;
 
@@ -15,5 +30,9 @@ process.on("unhandledRejection", (err: Error) => {
   server.close(() => {
     console.log("Server closed!");
     process.exit(1);
+  });
+
+  connection.end(() => {
+    console.log("Database connection closed!");
   });
 });
