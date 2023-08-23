@@ -16,10 +16,10 @@ USE `telegraph` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `telegraph`.`users` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(10) NOT NULL,
+  `username` VARCHAR(10) NOT NULL UNIQUE,
   `first_name` VARCHAR(45) NOT NULL,
   `second_name` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL UNIQUE,
   `password` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`user_id`))
 ENGINE = InnoDB;
