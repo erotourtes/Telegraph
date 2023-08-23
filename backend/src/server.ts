@@ -1,9 +1,7 @@
-import dotenv from "dotenv";
+import "./Utils/env.js";
 import app from "./app.js";
 import pool from "./sql/dbPool.js";
 import { promisify } from "./Utils/utils.js";
-
-dotenv.config();
 
 const PORT = process.env.PORT;
 
