@@ -1,129 +1,6 @@
 import { useState } from "react";
-
-const BASE_URL = "http://localhost:8000";
-
-const fetchUserLogIn = async (email: string, password: string) => {
-  const response = await fetch(`${BASE_URL}/api/v1/user/login`, {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
-
-  const user = await response.json();
-  return user;
-};
-
-function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const user = await fetchUserLogIn(email, password);
-    console.log(user);
-  };
-
-  return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button type="submit">Submit</button>
-      </form>
-    </>
-  );
-}
-
-const fetchUserSignUp = async (email: string, password: string, firstName: string, lastName: string) => {
-  const response = await fetch(`${BASE_URL}/api/v1/user/signup`, {
-    method: "POST",
-    body: JSON.stringify({ email, password, firstName, lastName }),
-  });
-
-  const user = await response.json();
-  return user;
-}
-
-function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const user = await fetchUserSignUp(email, password, firstName, lastName);
-    console.log(user);
-  }
-
-  return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="first-name">First Name</label>
-        <input required type="text" id="first-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-
-        <br />
-
-        <label htmlFor="last-name">Last Name</label>
-        <input required type="text" id="last-name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-
-        <br />
-
-        <label htmlFor="email">Email</label>
-        <input
-          required
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <br />
-
-        <label htmlFor="password">Password</label>
-        <input
-          required
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <br />
-
-        <label htmlFor="password">Confirm Password</label>
-        <input
-          required
-          type="password"
-          id="confirm-password"
-          value={passwordConfirmation}
-          onChange={(e) => setPasswordConfirmation(e.target.value)}
-        />
-        {password !== passwordConfirmation && <p>Passwords do not match</p>}
-
-        <br />
-
-        <button disabled={password !== passwordConfirmation} type="submit">Submit</button>
-      </form>
-    </>
-  )
-}
+import SignUp from "./SignUp";
+import SignIn from "./SignIn";
 
 function GreetForm() {
   const [isSignInMode, setIsSignInMode] = useState(true);
@@ -133,8 +10,7 @@ function GreetForm() {
       <button onClick={() => setIsSignInMode(true)}>Sign in</button>
       <button onClick={() => setIsSignInMode(false)}>Sign up</button>
 
-      { isSignInMode && <SignIn /> }
-      { !isSignInMode && <SignUp /> }
+      {isSignInMode ? <SignIn /> : <SignUp />}
     </>
   );
 }
