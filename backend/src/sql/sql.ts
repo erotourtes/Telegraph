@@ -46,3 +46,12 @@ WHERE id = ?;
 `,
     [arg.id],
   );
+
+export const getChatMessagesQuery = async (arg: { chatId: number }) =>
+  pool.query(
+    `
+SELECT * FROM telegraph.chat_messages
+WHERE chat_id = ?;
+`,
+    [arg.chatId],
+  );
