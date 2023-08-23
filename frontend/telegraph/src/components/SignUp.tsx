@@ -1,19 +1,25 @@
 import { useState } from "react";
 import { BASE_URL } from "../constants";
 
-const fetchUserSignUp = async (
-  email: string,
-  password: string,
-  firstName: string,
-  lastName: string
-) => {
+interface User {
+  email: string;
+  password: string;
+  username: string;
+  firstName: string;
+  secondName: string;
+}
+
+const fetchUserSignUp = async (usr: User) => {
   const response = await fetch(`${BASE_URL}/api/v1/user/signup`, {
     method: "POST",
-    body: JSON.stringify({ email, password, firstName, lastName }),
+    credentials: 'include', // Needed to include the cookie
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(usr),
   });
 
-  const user = await response.json();
-  return user;
+  return await response.json();
 };
 
 function SignUp() {
@@ -21,12 +27,23 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [secondName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const user = await fetchUserSignUp(email, password, firstName, lastName);
+    const { data: {user} } = await fetchUserSignUp({
+      email,
+      password,
+      firstName,
+      secondName,
+      username,
+    }).catch((err) => {
+      console.log(err);
+      return { data: {user: null} };
+    });
+
     console.log(user);
   };
 
@@ -49,8 +66,19 @@ function SignUp() {
           required
           type="text"
           id="last-name"
-          value={lastName}
+          value={secondName}
           onChange={(e) => setLastName(e.target.value)}
+        />
+
+        <br />
+
+        <label htmlFor="username">Username</label>
+        <input
+          required
+          type="text"
+          id="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <br />

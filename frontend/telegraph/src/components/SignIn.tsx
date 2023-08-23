@@ -4,6 +4,10 @@ import { BASE_URL } from "../constants.js";
 const fetchUserLogIn = async (email: string, password: string) => {
   const response = await fetch(`${BASE_URL}/api/v1/user/login`, {
     method: "POST",
+    credentials: 'include', // Needed to include the cookie
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ email, password }),
   });
 
