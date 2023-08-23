@@ -1,5 +1,5 @@
 import pool from "../sql/dbPool.js";
-import { UserWithId } from "./types.js";
+import { UserDB } from "./types.js";
 
 export const createUserQuery = async (arg: {
   username: string;
@@ -8,7 +8,7 @@ export const createUserQuery = async (arg: {
   email: string;
   password: string;
 }) =>
-  pool.query<UserWithId[]>(
+  pool.query<UserDB[]>(
     `
 INSERT INTO telegraph.users (
 	  username,
@@ -29,7 +29,7 @@ VALUES (
   );
 
 export const getUserQuery = async (arg: { email: string; password: string }) =>
-  pool.query<UserWithId[]>(
+  pool.query<UserDB[]>(
     `
 SELECT * FROM telegraph.users
 WHERE email = ? AND password = ?;
@@ -39,7 +39,7 @@ WHERE email = ? AND password = ?;
   );
 
 export const getUserByIdQuery = async (arg: { id: number }) =>
-  pool.query<UserWithId[]>(
+  pool.query<UserDB[]>(
     `
 SELECT * FROM telegraph.users
 WHERE id = ?;

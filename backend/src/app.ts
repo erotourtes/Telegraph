@@ -11,6 +11,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "10kb" }));
+app.use(cookieParser());
 
 app.use("/api/v1/user", userRouter);
 

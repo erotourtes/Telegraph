@@ -8,6 +8,11 @@ export interface User extends RowDataPacket {
   secondName: string;
 }
 
-export interface UserWithId extends User {
-  id: number;
+export interface UserDB extends RowDataPacket {
+  user_id: number;
+  email: string;
+  password: string;
+  username: string;
+  first_name: string;
+  second_name: string;
 }

@@ -1,12 +1,19 @@
 import { RequestHandler } from "express";
 import * as userService from "../services/userService.js";
-import { getJWTToken } from "../Utils/utils.js";
+import { getJWTToken, verifyJWTToken } from "../Utils/utils.js";
 
-export const login: RequestHandler = async (req, res, next) => {
+export const signin: RequestHandler = async (req, res, next) => {
+  const token = req.cookies?.jwt;
+  if (token) {
+    const decoded = await verifyJWTToken(token);
+    console.log("decoded token is ", decoded);
+    // TODO: use token to get a user
+  }
+
   await userService
     .login(req)
     .then((user) => {
-      const token = getJWTToken(user.id);
+      const token = getJWTToken(user.user_id);
       res.status(200).json({ status: "success", token, data: { user } });
     })
     .catch((err) => {
@@ -22,7 +29,7 @@ export const signup: RequestHandler = async (req, res, next) => {
   await userService
     .signup(req)
     .then((user) => {
-      const token = getJWTToken(user.id);
+      const token = getJWTToken(user.user_id);
 
       res
         .cookie("jwt", token, {
@@ -58,8 +65,17 @@ export const signup: RequestHandler = async (req, res, next) => {
     });
 };
 
-export const getUser: RequestHandler = async (req, res, next) => {
-  console.log(req.cookies.jwt);
+export const protect: RequestHandler = async (req, res, next) => {
+  const token = req.cookies?.jwt;
+  if (!token) {
+    return next(new Error("No Token provided"));
+  }
+
+  const decoded = await verifyJWTToken(token);
+
+  console.log("passing", decoded);
+
+  next();
   // return next(new AppError("No Token provided", 401));
 
   // await userService

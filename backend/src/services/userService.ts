@@ -1,6 +1,6 @@
 import { TypedRequestBody } from "../Utils/utils.js";
 import * as query from "../sql/sql.js";
-import { User, UserWithId } from "../sql/types.js";
+import { User, UserDB } from "../sql/types.js";
 
 export const login = async (
   req: TypedRequestBody<{ email: string; password: string }>,
@@ -9,7 +9,7 @@ export const login = async (
 
   if (rows.length === 0) throw new Error("User not found");
 
-  return rows[0] as UserWithId;
+  return rows[0] as UserDB;
 };
 
 export const signup = async (req: TypedRequestBody<User>) => {
@@ -18,7 +18,7 @@ export const signup = async (req: TypedRequestBody<User>) => {
     .createUserQuery(body)
     .then((res) => query.getUserQuery(body));
 
-  return rows[0] as UserWithId;
+  return rows[0] as UserDB;
 };
 
 export const getUser = async (req: TypedRequestBody<{ id: number }>) => {
@@ -26,5 +26,5 @@ export const getUser = async (req: TypedRequestBody<{ id: number }>) => {
 
   if (rows.length === 0) throw new Error("User not found");
 
-  return rows[0] as UserWithId;
+  return rows[0] as UserDB;
 };
