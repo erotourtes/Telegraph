@@ -20,9 +20,3 @@ export const getJWTToken = (id: number) =>
   jwt.sign({ id }, process.env.JWT_SECRET!, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
-
-export interface ServerResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}

@@ -4,9 +4,13 @@ import userRouter from "./routes/userRoutes.js";
 
 const app: Express = express();
 
-app.use(cors());
-app.use(express.json({ limit: "10kb" }));
+const corsOptions = {
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+};
 
+app.use(cors(corsOptions));
+app.use(express.json({ limit: "10kb" }));
 
 app.use("/api/v1/user", userRouter);
 

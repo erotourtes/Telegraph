@@ -9,7 +9,7 @@ export const createUserQuery = async (arg: {
   password: string;
 }) =>
   pool.query<UserWithId[]>(
-  `
+    `
 INSERT INTO telegraph.users (
 	  username,
     first_name,
@@ -24,12 +24,11 @@ VALUES (
   ?, 
   ?
 );
-`, [arg.username, arg.firstName, arg.secondName, arg.email, arg.password]);
+`,
+    [arg.username, arg.firstName, arg.secondName, arg.email, arg.password],
+  );
 
-export const getUserQuery = async (arg: {
-  email: string;
-  password: string;
-}) =>
+export const getUserQuery = async (arg: { email: string; password: string }) =>
   pool.query<UserWithId[]>(
     `
 SELECT * FROM telegraph.users
@@ -37,4 +36,13 @@ WHERE email = ? AND password = ?;
 `,
 
     [arg.email, arg.password],
+  );
+
+export const getUserByIdQuery = async (arg: { id: number }) =>
+  pool.query<UserWithId[]>(
+    `
+SELECT * FROM telegraph.users
+WHERE id = ?;
+`,
+    [arg.id],
   );

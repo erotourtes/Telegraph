@@ -3,19 +3,19 @@ import * as userService from "../services/userService.js";
 import { getJWTToken } from "../Utils/utils.js";
 
 export const login: RequestHandler = async (req, res, next) => {
-  const user = await userService.login(req).catch((err) => {
-    console.log(err);
-    return null;
-  });
+  await userService
+    .login(req)
+    .then((user) => {
+      const token = getJWTToken(user.id);
+      res.status(200).json({ status: "success", token, data: { user } });
+    })
+    .catch((err) => {
+      console.log(err);
 
-  if (!user) {
-    res
-      .status(401)
-      .json({ success: false, message: "Invalid credentials", data: {} });
-    return;
-  }
-
-  res.status(200).json({ status: "success", data: { user } });
+      res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials", data: {} });
+    });
 };
 
 export const signup: RequestHandler = async (req, res, next) => {
@@ -31,7 +31,12 @@ export const signup: RequestHandler = async (req, res, next) => {
           httpOnly: true,
         })
         .status(201)
-        .json({ success: true, data: { user }, message: "User created" });
+        .json({
+          success: true,
+          token,
+          data: { user },
+          message: "User created",
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -41,7 +46,7 @@ export const signup: RequestHandler = async (req, res, next) => {
 
         res.status(409).json({
           success: false,
-          message: `${entry} already taken`,
+          message: `${entry} is already taken`,
           data: {},
         });
       } else
@@ -51,4 +56,24 @@ export const signup: RequestHandler = async (req, res, next) => {
           data: {},
         });
     });
+};
+
+export const getUser: RequestHandler = async (req, res, next) => {
+  console.log(req.cookies.jwt);
+  // return next(new AppError("No Token provided", 401));
+
+  // await userService
+  //   .getUser(req)
+  //   .then((user) => {
+  //     res.status(200).json({ success: true, data: { user } });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //
+  //     res.status(500).json({
+  //       success: false,
+  //       message: `Something went wrong ${err.message}`,
+  //       data: {},
+  //     });
+  //   });
 };

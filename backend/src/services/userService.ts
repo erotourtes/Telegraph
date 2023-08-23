@@ -20,3 +20,11 @@ export const signup = async (req: TypedRequestBody<User>) => {
 
   return rows[0] as UserWithId;
 };
+
+export const getUser = async (req: TypedRequestBody<{ id: number }>) => {
+  const [rows] = await query.getUserByIdQuery(req.body);
+
+  if (rows.length === 0) throw new Error("User not found");
+
+  return rows[0] as UserWithId;
+};
