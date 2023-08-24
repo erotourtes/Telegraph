@@ -42,7 +42,7 @@ export const getUserByIdQuery = async (arg: { id: number }) =>
   pool.query<UserDB[]>(
     `
 SELECT * FROM telegraph.users
-WHERE id = ?;
+WHERE user_id = ?;
 `,
     [arg.id],
   );

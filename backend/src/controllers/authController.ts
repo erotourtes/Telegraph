@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import * as userService from "../services/userService.js";
 import { getJWTToken, verifyJWTToken } from "../Utils/utils.js";
+import { UserDB } from "../sql/types.js";
 
 export const signin: RequestHandler = async (req, res, next) => {
   const token = req.cookies?.jwt;
@@ -11,7 +12,7 @@ export const signin: RequestHandler = async (req, res, next) => {
   }
 
   await userService
-    .login(req)
+    .login(req.body)
     .then((user) => {
       const token = getJWTToken(user.user_id);
       res.status(200).json({ status: "success", token, data: { user } });
@@ -27,7 +28,7 @@ export const signin: RequestHandler = async (req, res, next) => {
 
 export const signup: RequestHandler = async (req, res, next) => {
   await userService
-    .signup(req)
+    .signup(req.body)
     .then((user) => {
       const token = getJWTToken(user.user_id);
 
@@ -71,25 +72,25 @@ export const protect: RequestHandler = async (req, res, next) => {
     return next(new Error("No Token provided"));
   }
 
-  const decoded = await verifyJWTToken(token);
+  const decoded = await verifyJWTToken(token).catch((err) => {
+    console.log(err);
 
-  console.log("passing", decoded);
+    return null;
+  });
 
-  next();
-  // return next(new AppError("No Token provided", 401));
+  if (!decoded) return next(new Error("Invalid Token"));
 
-  // await userService
-  //   .getUser(req)
-  //   .then((user) => {
-  //     res.status(200).json({ success: true, data: { user } });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //
-  //     res.status(500).json({
-  //       success: false,
-  //       message: `Something went wrong ${err.message}`,
-  //       data: {},
-  //     });
-  //   });
+  const id = +decoded.id;
+
+  const user = await userService.getUser({ id }).catch((err) => {
+    console.log(err);
+
+    return null;
+  });
+
+  if (!user) return next(new Error("Invalid Token, maybe token is expired"));
+
+  req.user = user;
+
+  return next();
 };

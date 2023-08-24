@@ -1,4 +1,4 @@
-import jwt, { Jwt } from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 type Fn = (...args: any[]) => void;
 
@@ -35,5 +35,5 @@ export const verifyJWTToken = (token: string) => {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET is not set");
 
-  return promisify<Jwt>(jwt.verify)(token, secret);
+  return promisify<JwtPayload>(jwt.verify)(token, secret);
 };

@@ -12,6 +12,8 @@ export const getMessages: RequestHandler = async (req, res, next) => {
   //   });
   const messages = "hello";
 
+  console.log("user is ", req.user);
+
   console.log(messages);
 
   res.status(200).json({ status: "success", data: { messages } });
