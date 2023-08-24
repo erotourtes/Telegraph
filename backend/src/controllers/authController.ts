@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import * as userService from "../services/userService.js";
 import { getJWTToken, verifyJWTToken } from "../Utils/utils.js";
-import { UserDB } from "../sql/types.js";
 
 export const signin: RequestHandler = async (req, res, next) => {
   const token = req.cookies?.jwt;
@@ -15,7 +14,14 @@ export const signin: RequestHandler = async (req, res, next) => {
     .login(req.body)
     .then((user) => {
       const token = getJWTToken(user.user_id);
-      res.status(200).json({ status: "success", token, data: { user } });
+      res
+        .cookie("jwt", token, {
+          expires: new Date(Date.now() + 900000), // TODO: use env variable
+          secure: process.env.NODE_ENV === "production",
+          httpOnly: true,
+        })
+        .status(200)
+        .json({ status: "success", token, data: { user } });
     })
     .catch((err) => {
       console.log(err);

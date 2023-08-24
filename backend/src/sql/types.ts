@@ -16,3 +16,19 @@ export interface UserDB extends RowDataPacket {
   first_name: string;
   second_name: string;
 }
+
+export interface MessageDB extends RowDataPacket {
+  message_id: number;
+  content: string;
+  chat_id: number;
+  user_id: number;
+  sent_at: Date;
+}
+
+export interface ChatDB extends RowDataPacket {
+  chat_id: number;
+  user_id1: number;
+  user_id2: number;
+  created_at: Date;
+  name: string;
+}
