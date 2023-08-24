@@ -31,8 +31,22 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `telegraph`.`chats` (
   `chat_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`chat_id`))
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id1` INT NOT NULL,
+  `user_id2` INT NOT NULL,
+  PRIMARY KEY (`chat_id`),
+  INDEX `fk_chats_users1_idx` (`user_id1` ASC) VISIBLE,
+  INDEX `fk_chats_users2_idx` (`user_id2` ASC) VISIBLE,
+  CONSTRAINT `fk_chats_users1`
+    FOREIGN KEY (`user_id1`)
+    REFERENCES `telegraph`.`users` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_chats_users2`
+    FOREIGN KEY (`user_id2`)
+    REFERENCES `telegraph`.`users` (`user_id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
