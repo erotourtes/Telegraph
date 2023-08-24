@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/server.js",
-    "dev": "concurrently \"nodemon --exec node --loader ts-node/esm src/server.ts\""
+    "dev": "concurrently \"nodemon --exec npx ts-node-esm src/server.ts\""
   },
   "keywords": [],
   "author": "",
