@@ -51,7 +51,6 @@ function ChatMessges({ chatId }: { chatId: number }) {
         <h1>Messages</h1>
         <ul>{messagesList}</ul>
       </div>
-      <button>Send</button>
     </>
   );
 }
