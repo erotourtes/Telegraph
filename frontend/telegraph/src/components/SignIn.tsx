@@ -4,26 +4,30 @@ import { BASE_URL } from "../constants.js";
 const fetchUserLogIn = async (email: string, password: string) => {
   const response = await fetch(`${BASE_URL}/api/v1/user/login`, {
     method: "POST",
-    credentials: 'include', // Needed to include the cookie
+    credentials: "include", // Needed to include the cookie
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),
   });
 
-  const user = await response.json();
-  return user;
+  return await response.json();
 };
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<null | string>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const user = await fetchUserLogIn(email, password);
-    console.log(user);
+    const { success, message, data } = await fetchUserLogIn(email, password);
+
+    if (!success) setError(message);
+    else setError(null);
+
+    console.log(success, message, data);
   };
 
   return (
@@ -46,6 +50,8 @@ function SignIn() {
         />
 
         <button type="submit">Submit</button>
+
+        {error && <p>{error}</p>}
       </form>
     </>
   );

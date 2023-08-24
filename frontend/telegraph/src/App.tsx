@@ -1,15 +1,11 @@
-import './App.css'
-import Chats from './components/Chats'
-import GreetForm from './components/GreetForm'
+import "./App.css";
+import { useAuth } from "./components/Auth/AuthContext";
+import Chats from "./components/Chats";
+import GreetForm from "./components/GreetForm";
 
 function App() {
-
-  return (
-    <>
-      <GreetForm />
-      <Chats />
-    </>
-  )
+  const { isLoggedIn } = useAuth();
+  return <>{isLoggedIn ? <Chats /> : <GreetForm />}</>;
 }
 
-export default App
+export default App;
