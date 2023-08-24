@@ -1,6 +1,10 @@
 import { RequestHandler } from "express";
 import * as userService from "../services/userService.js";
-import { getJWTToken, verifyJWTToken } from "../Utils/utils.js";
+import {
+  getExpiryJWTDate,
+  getJWTToken,
+  verifyJWTToken,
+} from "../Utils/utils.js";
 
 export const signin: RequestHandler = async (req, res, next) => {
   const token = req.cookies?.jwt;
@@ -16,12 +20,12 @@ export const signin: RequestHandler = async (req, res, next) => {
       const token = getJWTToken(user.user_id);
       res
         .cookie("jwt", token, {
-          expires: new Date(Date.now() + 900000), // TODO: use env variable
+          expires: getExpiryJWTDate(),
           secure: process.env.NODE_ENV === "production",
           httpOnly: true,
         })
         .status(200)
-        .json({ status: "success", token, data: { user } });
+        .json({ success: true, token, data: { user } });
     })
     .catch((err) => {
       console.log(err);
@@ -40,7 +44,7 @@ export const signup: RequestHandler = async (req, res, next) => {
 
       res
         .cookie("jwt", token, {
-          expires: new Date(Date.now() + 900000), // TODO: use env variable
+          expires: getExpiryJWTDate(),
           secure: process.env.NODE_ENV === "production",
           httpOnly: true,
         })
@@ -99,4 +103,11 @@ export const protect: RequestHandler = async (req, res, next) => {
   req.user = user;
 
   return next();
+};
+
+
+export const isLoggedIn: RequestHandler = async (req, res, next) => {
+  const user = req.user;
+  if (!user) return next(new Error("User is not logged in"));
+  res.status(200).json({ success: true, data: { isLoggedIn: true } });
 };

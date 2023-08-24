@@ -37,3 +37,13 @@ export const verifyJWTToken = (token: string) => {
 
   return promisify<JwtPayload>(jwt.verify)(token, secret);
 };
+
+export const getExpiryJWTDate = () => {
+  if (!process.env.JWT_EXPIRES_IN) throw new Error("JWT_EXPIRES_IN is not set");
+
+  const expiresEnv = +process.env.JWT_EXPIRES_IN!.split("d")[0];
+  const expires = new Date();
+  expires.setDate(new Date().getDate() + expiresEnv);
+
+  return expires;
+};
