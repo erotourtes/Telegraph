@@ -17,4 +17,10 @@ router.get(
   chatController.getMessagesByChatId,
 );
 
+router.post(
+  "/create-chat/:username",
+  authController.protect,
+  chatController.createChatByUsername,
+);
+
 export default router;

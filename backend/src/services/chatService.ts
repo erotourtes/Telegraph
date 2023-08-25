@@ -56,3 +56,23 @@ export const getChatMessagesByChatId = async ({
 
   return rows as MessageDB[];
 };
+
+export const createChat = async ({
+  username2,
+  userId,
+  username1,
+}: {
+  username1: string;
+  userId: number;
+  username2: string;
+}) => {
+  if (!username1 || !userId || !username2)
+    throw new Error("Username is undefinded");
+
+  const [rows] = await query
+    .createChat({ username1, username2, userId });
+
+  if (!rows) throw new Error("Can't create a chat");
+
+  return rows[0] as ChatDB;
+};

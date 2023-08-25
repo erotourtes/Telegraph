@@ -16,7 +16,7 @@ export const getMessages: RequestHandler = async (req, res, next) => {
 
   if (!messages) return next(new Error("Cannot get messages"));
 
-  res.status(200).json({ status: "success", data: { messages } });
+  res.status(200).json({ success: true, data: { messages } });
 };
 
 export const getMessagesByChatId: RequestHandler = async (req, res, next) => {
@@ -34,7 +34,7 @@ export const getMessagesByChatId: RequestHandler = async (req, res, next) => {
 
   if (!messages) return next(new Error("Cannot get messages"));
 
-  res.status(200).json({ status: "success", data: { messages } });
+  res.status(200).json({ success: true, data: { messages } });
 };
 
 export const getChats: RequestHandler = async (req, res, next) => {
@@ -51,5 +51,31 @@ export const getChats: RequestHandler = async (req, res, next) => {
 
   if (!chats) return next(new Error("Cannot get chats"));
 
-  res.status(200).json({ status: "success", data: { chats } });
+  res.status(200).json({ success: true, data: { chats } });
+};
+
+export const createChatByUsername: RequestHandler = async (req, res, next) => {
+  const username = req.params.username;
+  const user = req.user;
+
+  if (!username || !user)
+    throw new Error("Username is not defined, or you're not logged in");
+
+  const chat = await chatService
+    .createChat({
+      username2: username,
+      username1: user.username,
+      userId: user.user_id,
+    })
+    .catch((err) => {
+      console.log(err);
+      return null;
+    });
+
+  if (!chat)
+    return next(new Error("Cannot create a chat; Maybe user doesn't exist"));
+
+  res
+    .status(200)
+    .json({ success: true, message: "Created chat", data: { chat } });
 };

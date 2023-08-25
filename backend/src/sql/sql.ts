@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import pool from "../sql/dbPool.js";
-import { UserDB } from "./types.js";
+import { ChatDB, UserDB } from "./types.js";
 
 export const createUserQuery = async (arg: {
   username: string;
@@ -98,3 +98,36 @@ SELECT EXISTS(
 `,
     [arg.userId, arg.userId, arg.chatId],
   );
+
+export const createChat = async (arg: {
+  username1: string;
+  userId: number;
+  username2: string;
+}) => {
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+    await connection.query(
+      `
+CALL telegraph.CREATE_CHAT(?, ?, ?);
+`,
+      [arg.userId, arg.username1, arg.username2],
+    );
+
+    const result = await connection.query<ChatDB[]>(
+      `
+SELECT * FROM telegraph.chats c WHERE c.chat_id = LAST_INSERT_ID();
+`,
+    );
+
+    await connection.commit();
+    return result;
+
+  } catch (err) {
+    await connection.rollback();
+    throw err;
+  } finally {
+    connection.release();
+  }
+};
