@@ -1,15 +1,8 @@
 import { useState } from "react";
 import { BASE_URL } from "../constants";
+import { UserI } from "../interfaces";
 
-interface User {
-  email: string;
-  password: string;
-  username: string;
-  firstName: string;
-  secondName: string;
-}
-
-const fetchUserSignUp = async (usr: User) => {
+const fetchUserSignUp = async (usr: UserI) => {
   const response = await fetch(`${BASE_URL}/api/v1/user/signup`, {
     method: "POST",
     credentials: 'include', // Needed to include the cookie

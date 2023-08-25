@@ -1,13 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { BASE_URL } from "../constants";
-
-interface ChatI {
-  chat_id: number;
-  name: string;
-  created_at: string;
-  user_id1: number;
-  user_id2: number;
-}
+import { ChatI } from "../interfaces";
 
 const fetchAllChats = async () => {
   const response = await fetch(`${BASE_URL}/api/v1/chat/all-chats`, {
@@ -25,11 +18,12 @@ const fetchAllChats = async () => {
 
 interface Props {
   setChatId: (chatId: number) => void;
+  curChatId: number;
+  chats: ChatI[];
+  setChats: (chats: ChatI[]) => void;
 }
 
-function AvaliableChats({ setChatId }: Props) {
-  const [chats, setChats] = useState<ChatI[]>([]);
-
+function AvaliableChats({ setChatId: setCurrChatId, curChatId, chats, setChats }: Props) {
   useEffect(() => {
     async function getAllChats() {
       const {
@@ -46,7 +40,8 @@ function AvaliableChats({ setChatId }: Props) {
 
   const chatsList = chats.map((chat) => (
     <li key={chat.chat_id}>
-      <p onClick={() => setChatId(chat.chat_id)}>{chat.name}</p>
+      {curChatId === chat.chat_id && <p>Current chat</p>}
+      <p onClick={() => setCurrChatId(chat.chat_id)}>{chat.name}</p>
     </li>
   ));
 

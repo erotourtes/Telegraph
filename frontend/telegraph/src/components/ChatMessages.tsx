@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../constants";
 
-interface MessageI {
-  message_id: number;
-  chat_id: number;
-  user_id: number;
-  content: string;
-  created_at: Date;
-}
-
 const fetchChatMessages = async (chatId: number) => {
   const response = await fetch(
     `${BASE_URL}/api/v1/chat/messages/chat/${chatId}`,
@@ -28,7 +20,9 @@ const fetchChatMessages = async (chatId: number) => {
 };
 
 function ChatMessges({ chatId }: { chatId: number }) {
-  const [messages, setMessages] = useState<MessageI[]>([]);
+    type NewType = MessageI;
+
+  const [messages, setMessages] = useState<NewType[]>([]);
 
   useEffect(() => {
     async function messages() {
