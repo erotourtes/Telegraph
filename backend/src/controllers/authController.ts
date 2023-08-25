@@ -3,6 +3,7 @@ import * as userService from "../services/userService.js";
 import {
   getExpiryJWTDate,
   getJWTToken,
+  getUserFromJWT,
   verifyJWTToken,
 } from "../Utils/utils.js";
 
@@ -78,23 +79,10 @@ export const signup: RequestHandler = async (req, res, next) => {
 
 export const protect: RequestHandler = async (req, res, next) => {
   const token = req.cookies?.jwt;
-  if (!token) {
-    return next(new Error("No Token provided"));
-  }
+  if (!token) return next(new Error("No Token provided"));
 
-  const decoded = await verifyJWTToken(token).catch((err) => {
+  const user = await getUserFromJWT(token).catch((err) => {
     console.log(err);
-
-    return null;
-  });
-
-  if (!decoded) return next(new Error("Invalid Token"));
-
-  const id = +decoded.id;
-
-  const user = await userService.getUser({ id }).catch((err) => {
-    console.log(err);
-
     return null;
   });
 
@@ -104,7 +92,6 @@ export const protect: RequestHandler = async (req, res, next) => {
 
   return next();
 };
-
 
 export const isLoggedIn: RequestHandler = async (req, res, next) => {
   const user = req.user;

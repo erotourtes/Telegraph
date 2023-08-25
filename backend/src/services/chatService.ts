@@ -69,10 +69,44 @@ export const createChat = async ({
   if (!username1 || !userId || !username2)
     throw new Error("Username is undefinded");
 
-  const [rows] = await query
-    .createChat({ username1, username2, userId });
+  const [rows] = await query.createChat({ username1, username2, userId });
 
   if (!rows) throw new Error("Can't create a chat");
 
   return rows[0] as ChatDB;
+};
+
+export const addMessage = async ({
+  chatId,
+  userId,
+  content,
+}: {
+  chatId: number;
+  userId: number;
+  content: string;
+}) => {
+  if (!chatId || !userId || content === undefined)
+    throw new Error("Params shoudn't be undefinded");
+
+  const [rows] = await query.addMessage({ chatId, userId, content });
+
+  if (!rows) throw new Error("Can't add a message");
+
+  return rows[0] as MessageDB;
+};
+
+export const getOtherUserId = async ({
+  userId,
+  chatId,
+}: {
+  userId: number;
+  chatId: number;
+}) => {
+  if (!userId || !chatId) throw new Error("Params shoudn't be undefinded");
+
+  const [rows] = await query.getOtherUserId({ userId, chatId });
+
+  if (!rows) throw new Error("Can't get other user id");
+
+  return rows[0];
 };

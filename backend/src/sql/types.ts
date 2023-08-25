@@ -32,3 +32,7 @@ export interface ChatDB extends RowDataPacket {
   created_at: Date;
   name: string;
 }
+
+export interface GetOtherUserIdQueryResult extends RowDataPacket {
+  user_id: number;
+}

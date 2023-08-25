@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import pool from "../sql/dbPool.js";
-import { ChatDB, UserDB } from "./types.js";
+import { ChatDB, GetOtherUserIdQueryResult, MessageDB, UserDB } from "./types.js";
 
 export const createUserQuery = async (arg: {
   username: string;
@@ -123,7 +123,6 @@ SELECT * FROM telegraph.chats c WHERE c.chat_id = LAST_INSERT_ID();
 
     await connection.commit();
     return result;
-
   } catch (err) {
     await connection.rollback();
     throw err;
@@ -131,3 +130,49 @@ SELECT * FROM telegraph.chats c WHERE c.chat_id = LAST_INSERT_ID();
     connection.release();
   }
 };
+
+export const addMessage = async (arg: {
+  userId: number;
+  chatId: number;
+  content: string;
+}) => {
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+    await connection.query(
+      `
+INSERT INTO telegraph.chat_messages (
+  user_id,
+  chat_id,
+  content
+) VALUES (?, ?, ?);
+`,
+      [arg.userId, arg.chatId, arg.content],
+    );
+
+    const result = await connection.query<MessageDB[]>(
+      `
+SELECT * FROM telegraph.chat_messages m WHERE m.message_id = LAST_INSERT_ID();
+`,
+      [],
+    );
+
+    await connection.commit();
+
+    return result;
+  } catch (err) {
+    await connection.rollback();
+    throw err;
+  } finally {
+    connection.release();
+  }
+};
+
+export const getOtherUserId = async (arg: { userId: number; chatId: number }) =>
+  pool.query<GetOtherUserIdQueryResult[]>(
+    `
+SELECT IF(c.user_id1 = ?, c.user_id2, c.user_id1) AS user_id FROM telegraph.chats c WHERE c.chat_id = ?;
+`,
+    [arg.userId, arg.chatId],
+  );

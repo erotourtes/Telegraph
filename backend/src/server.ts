@@ -2,10 +2,18 @@ import "./Utils/env.js";
 import app from "./app.js";
 import pool from "./sql/dbPool.js";
 import { promisify } from "./Utils/utils.js";
+import { WebSocketServer } from "ws";
+import http from "http";
+import { onConnect } from "./ws/connection.js";
 
 const PORT = process.env.PORT;
 
-const server = app.listen(PORT, () => {
+const server = http.createServer(app);
+
+const wss = new WebSocketServer({ server });
+wss.on("connection", onConnect);
+
+server.listen(PORT, () => {
   console.log(`[server]: Server is running at http://localhost:${PORT}`);
 });
 
