@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import AuthContext from "./AuthContext.ts";
 import { BASE_URL } from "../../constants.ts";
+import { UserI } from "@/interfaces.ts";
 
 const checkIfUserIsLoggedIn = async () => {
   const response = await fetch(`${BASE_URL}/api/v1/user/is-logged-in`, {
@@ -13,27 +14,38 @@ const checkIfUserIsLoggedIn = async () => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<null | UserI>(null);
 
   useEffect(() => {
     async function checkIfLoggedIn() {
       const {
-        data: { isLoggedIn },
-      } = await checkIfUserIsLoggedIn();
+        data: { isLoggedIn, user },
+      } = await checkIfUserIsLoggedIn().catch((err) => {
+        console.log(err);
+        return { data: { isLoggedIn: false, user: null } };
+      });
+
       console.log("is logged in: ", isLoggedIn);
       setIsLoggedIn(Boolean(isLoggedIn));
+      setUser(user);
     }
 
-    window.addEventListener("load", checkIfLoggedIn);
+    window.addEventListener("load", () => {
+      console.log("load event fired");
+      checkIfLoggedIn();
+    });
 
+    // causes infinite loop without a dependency array, because isLoggedIn is not changed, but user is send new
     checkIfLoggedIn();
 
     return () => {
       window.removeEventListener("load", checkIfLoggedIn);
     };
-  });
+  }, [setIsLoggedIn]);
+  // }); // infinite loop with setUser()
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, user }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BASE_URL } from "../constants.js";
+import { useAuth } from "./Auth/AuthContext.js";
 
 const fetchUserLogIn = async (email: string, password: string) => {
   const response = await fetch(`${BASE_URL}/api/v1/user/login`, {
@@ -18,6 +19,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<null | string>(null);
+  const { setIsLoggedIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ function SignIn() {
     if (!success) setError(message);
     else setError(null);
 
+    setIsLoggedIn(success);
     console.log(success, message, data);
   };
 
