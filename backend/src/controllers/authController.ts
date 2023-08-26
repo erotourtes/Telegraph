@@ -96,5 +96,16 @@ export const protect: RequestHandler = async (req, res, next) => {
 export const isLoggedIn: RequestHandler = async (req, res, next) => {
   const user = req.user;
   if (!user) return next(new Error("User is not logged in"));
-  res.status(200).json({ success: true, data: { isLoggedIn: true } });
+  res.status(200).json({ success: true, data: { isLoggedIn: true, user } });
+};
+
+export const logOut: RequestHandler = async (req, res, next) => {
+  res
+    .cookie("jwt", "", {
+      expires: new Date(0),
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+    })
+    .status(200)
+    .json({ success: true, data: {} });
 };
