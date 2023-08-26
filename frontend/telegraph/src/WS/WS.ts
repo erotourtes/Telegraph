@@ -54,27 +54,27 @@ class EmitableWS extends EventEmitter<ReceiveType> {
       };
     });
 
-    ws.onmessage = (event) => {
-      try {
-        const message = event.data;
-        const json = JSON.parse(message.toString());
-        this.emit(json.type, json.data);
-      } catch (err) {
-        console.log(`Can't parse server message (${event.data}) ${err}`);
-      }
-    };
+    return promise.then(() => {
+      ws.onmessage = (event) => {
+        try {
+          const message = event.data;
+          const json = JSON.parse(message.toString());
+          this.emit(json.type, json.data);
+        } catch (err) {
+          console.log(`Can't parse server message (${event.data}) ${err}`);
+        }
+      };
 
-    ws.onclose = () => {
-      if (!shouldReconnect) return;
-      setTimeout(() => {
-        console.log("Reconnecting...");
-        this.init();
-      }, 1000);
+      ws.onclose = () => {
+        if (!shouldReconnect) return;
+        setTimeout(() => {
+          console.log("Reconnecting once after 5000ms...");
+          this.init();
+        }, 5000);
 
-      console.log("Connection closed.");
-    };
-
-    return promise;
+        console.log("Connection closed. reconnecting...");
+      };
+    });
   }
 
   send(type: SendType, data: any) {
