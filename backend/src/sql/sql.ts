@@ -1,6 +1,11 @@
 /* eslint-disable max-len */
 import pool from "../sql/dbPool.js";
-import { ChatDB, GetOtherUserIdQueryResult, MessageDB, UserDB } from "./types.js";
+import {
+  ChatDB,
+  GetOtherUserIdQueryResult,
+  MessageDB,
+  UserDB,
+} from "./types.js";
 
 export const createUserQuery = async (arg: {
   username: string;
@@ -66,10 +71,19 @@ WHERE (c.user_id1 = ? OR c.user_id2 = ?) AND (
   );
 
 export const getChatMessagesQuery = async (arg: { chatId: number }) =>
-  pool.query(
+  pool.query<(MessageDB & { username: string })[]>(
     `
-SELECT * FROM telegraph.chat_messages m
-WHERE m.chat_id = ?;
+SELECT 
+  	user_id,
+  	message_id,
+    content,
+    sent_at,
+    chat_id,
+    username
+FROM telegraph.chat_messages m
+JOIN telegraph.users USING(user_id)
+WHERE chat_id = ?
+ORDER BY sent_at ASC;
 `,
     [arg.chatId],
   );
@@ -153,7 +167,16 @@ INSERT INTO telegraph.chat_messages (
 
     const result = await connection.query<MessageDB[]>(
       `
-SELECT * FROM telegraph.chat_messages m WHERE m.message_id = LAST_INSERT_ID();
+SELECT 
+  	user_id,
+  	message_id,
+    content,
+    sent_at,
+    chat_id,
+    username
+FROM telegraph.chat_messages m 
+JOIN telegraph.users u USING(user_id)
+WHERE m.message_id = LAST_INSERT_ID();
 `,
       [],
     );

@@ -54,7 +54,7 @@ export const getChatMessagesByChatId = async ({
 
   const [rows] = await query.getChatMessagesQuery({ chatId });
 
-  return rows as MessageDB[];
+  return rows as (MessageDB & { username: string })[];
 };
 
 export const createChat = async ({
@@ -92,7 +92,7 @@ export const addMessage = async ({
 
   if (!rows) throw new Error("Can't add a message");
 
-  return rows[0] as MessageDB;
+  return rows[0] as MessageDB & { username: string };
 };
 
 export const getOtherUserId = async ({
