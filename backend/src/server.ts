@@ -18,11 +18,19 @@ server.listen(PORT, () => {
 });
 
 process.on("unhandledRejection", (err: Error) => {
-  console.log(err.name, err.message);
+  console.log("--------------------------");
+  console.log(err.stack);
   console.log("Unhandled rejection! Shutting down...");
+  console.log("--------------------------");
 
   const promises = Promise.all([
-    promisify<void>(server.close)().then(() => console.log("Server closed!")),
+    promisify<void>(server.close)()
+      .then(() => console.log("Server closed!"))
+      .catch(() =>
+        console.log(
+          "Error shutting down server! Maybe the mysql process is not running",
+        ),
+      ),
     pool.end().then(() => console.log("Database connection closed!")),
   ]);
 
