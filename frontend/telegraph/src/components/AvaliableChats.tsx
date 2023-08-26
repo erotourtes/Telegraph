@@ -32,7 +32,6 @@ function AvaliableChats({ setChatId: setCurrChatId, curChatId, chats, setChats }
       chats as ChatI[];
 
       setChats(chats);
-      console.log(chats);
     }
 
     getAllChats();

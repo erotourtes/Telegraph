@@ -11,11 +11,7 @@ const checkIfUserIsLoggedIn = async () => {
   return await response.json();
 };
 
-export const AuthProvider = ({
-  children
-}: {
-  children: ReactNode;
-}) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -27,7 +23,13 @@ export const AuthProvider = ({
       setIsLoggedIn(Boolean(isLoggedIn));
     }
 
+    window.addEventListener("load", checkIfLoggedIn);
+
     checkIfLoggedIn();
+
+    return () => {
+      window.removeEventListener("load", checkIfLoggedIn);
+    };
   });
 
   return (

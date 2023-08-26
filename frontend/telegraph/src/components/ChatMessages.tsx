@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../constants";
+import { MessageI } from "@/interfaces";
+import ws from "@/WS/WS";
 
 const fetchChatMessages = async (chatId: number) => {
   const response = await fetch(
@@ -20,18 +22,30 @@ const fetchChatMessages = async (chatId: number) => {
 };
 
 function ChatMessges({ chatId }: { chatId: number }) {
-    type NewType = MessageI;
-
-  const [messages, setMessages] = useState<NewType[]>([]);
+  const [messages, setMessages] = useState<MessageI[]>([]);
 
   useEffect(() => {
     async function messages() {
-      const { data: { messages }} = await fetchChatMessages(chatId);
+      const {
+        data: { messages },
+      } = await fetchChatMessages(chatId);
       setMessages(messages);
     }
 
     messages();
   }, [chatId]);
+
+  useEffect(() => {
+    const cb = ({ message }: { message: MessageI }) => {
+      setMessages((messages) => [...messages, message]);
+    };
+
+    ws.on("message-notify", cb);
+
+    return () => {
+      ws.removeListener("message-notify", cb);
+    };
+  }, []);
 
   const messagesList = messages.map((message) => (
     <li key={message.message_id}>
