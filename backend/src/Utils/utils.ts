@@ -2,7 +2,6 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import * as userService from "../services/userService.js";
 import EventEmitter from "node:events";
 import { WebSocket } from "ws";
-import { UserDB } from "../sql/types.js";
 
 type Fn = (...args: any[]) => void;
 
@@ -84,26 +83,26 @@ export const getUserFromJWT = async (token: string) => {
   return user;
 };
 
-export class EmitableWS extends EventEmitter {
+export class EmitableWS<T> extends EventEmitter {
   // TODO: add types (message-sent, chat-created)
   private ws: WebSocket;
-  private user: UserDB;
+  private params: T;
 
-  constructor(ws: WebSocket, user: UserDB) {
+  constructor(ws: WebSocket, user: T, typeName: string) {
     super();
     this.ws = ws;
-    this.user = user;
+    this.params = user;
 
-    this.init();
+    this.init(typeName);
   }
 
-  init() {
+  init(typeName: string) {
     const { ws } = this;
 
     ws.on("message", (message) => {
       try {
         const json = JSON.parse(message.toString());
-        this.emit(json.type, { ...json.data, user: this.user });
+        this.emit(json.type, { ...json.data, [typeName]: this.params });
       } catch (err) {
         console.log(err);
       }

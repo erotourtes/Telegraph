@@ -58,7 +58,7 @@ export const onConnect = async (
 
   if (!user) throw new Error("User is not defined in websocket connection");
 
-  const emitableWS = new EmitableWS(ws, user);
+  const emitableWS = new EmitableWS<UserDB>(ws, user, "user");
 
   connections.set(user.user_id, ws);
 
