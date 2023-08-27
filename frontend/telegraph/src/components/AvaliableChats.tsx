@@ -39,8 +39,9 @@ function AvaliableChats({ setChatId: setCurrChatId, curChatId, chats, setChats }
 
   const chatsList = chats.map((chat) => (
     <li key={chat.chat_id}>
-      {curChatId === chat.chat_id && <p>Current chat</p>}
-      <p onClick={() => setCurrChatId(chat.chat_id)}>{chat.name}</p>
+      <p style={{
+        color: curChatId === chat.chat_id ? "red" : ""
+      }} onClick={() => setCurrChatId(chat.chat_id)}>{chat.name}</p>
     </li>
   ));
 

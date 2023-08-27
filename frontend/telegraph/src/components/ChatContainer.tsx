@@ -7,7 +7,7 @@ interface Props {
 }
 
 const fetchSendMessage = async (chatId: number, content: string) => {
-  ws.send("message-sent", { chatId, content });
+  await ws.send("message-sent", { chatId, content });
 };
 
 function ChatContainer({ chatId }: Props) {
@@ -26,7 +26,7 @@ function ChatContainer({ chatId }: Props) {
           />
           <button
             onClick={() => {
-              fetchSendMessage(chatId, message);
+              fetchSendMessage(chatId, message).then(() => setMessage(""));
             }}
           >
             Send

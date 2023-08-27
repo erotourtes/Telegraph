@@ -20,5 +20,9 @@ export interface MessageI {
   chat_id: number;
   user_id: number;
   content: string;
-  sent_at: Date;
+  sent_at: string;
+}
+
+export interface MessageWithUserI extends MessageI {
+  username: string;
 }

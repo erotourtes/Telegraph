@@ -32,10 +32,10 @@ class EventEmitter<E extends string> {
 type SendType = "message-sent" | "chat-created";
 type ReceiveType = "message-notify";
 class EmitableWS extends EventEmitter<ReceiveType> {
-  private ws: WebSocket = {} as WebSocket; // lateinit
+  private ws: WebSocket | null = null; // lateinit
 
   close() {
-    this.ws.close();
+    this.ws?.close();
   }
 
   async init(shouldReconnect = true) {
@@ -67,22 +67,37 @@ class EmitableWS extends EventEmitter<ReceiveType> {
 
       ws.onclose = () => {
         if (!shouldReconnect) return;
+        const timeout = 1000;
         setTimeout(() => {
-          console.log("Reconnecting once after 5000ms...");
+          console.log(`Reconnecting...`);
           this.init();
-        }, 5000);
+        }, timeout);
 
-        console.log("Connection closed. reconnecting...");
+        console.log(`Connection closed. Reconnecting after ${timeout}ms ...`);
       };
     });
   }
 
-  send(type: SendType, data: any) {
-    if (this.ws.readyState !== WebSocket.OPEN)
-      this.init().then(() => {
-        this.ws.send(JSON.stringify({ type, data }));
-      });
-    else this.ws.send(JSON.stringify({ type, data }));
+  async send(type: SendType, data: any) {
+    if (!this.ws || this.ws.readyState == WebSocket.CLOSED) await this.init();
+
+    if (
+      !this.ws ||
+      this.ws.readyState === WebSocket.CLOSING ||
+      this.ws.readyState === WebSocket.CLOSED
+    )
+      throw new Error("WS not open");
+
+    // TODO: wtf; it can't send first connection with 100 timeout
+    let timeout = 100;
+    setTimeout(() => {
+      timeout = 0;
+      this.ws?.send(JSON.stringify({ type, data }));
+    }, timeout);
+  }
+
+  toString() {
+    return "EmitableWS: " + this.ws?.readyState ?? "null";
   }
 }
 
