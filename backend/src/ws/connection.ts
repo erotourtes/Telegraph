@@ -47,6 +47,10 @@ const onMessage = {
     // const { chat_id, user_id, user } = msg;
     console.log("chat-created", msg);
   },
+  "close-ws": async (msg: any) => {
+    console.log("connection ws is closed", msg);
+    connections.delete(msg.user.user_id);
+  }
 };
 
 export const onConnect = async (

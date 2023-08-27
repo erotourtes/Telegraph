@@ -16,16 +16,26 @@ export const getChatId = async ({
 export const getChatMessages = async ({
   userId,
   username,
+  skip,
+  take,
 }: {
   userId: number;
   username: string;
+  skip: number | null;
+  take: number | null;
 }) => {
+  if (!userId || !username) throw new Error("Params shoudn't be undefinded");
+
   const rows = await getChatId({ userId, username });
 
   const chatId = rows.at(0)?.chat_id;
   if (!chatId) throw new Error("Chat is not found");
 
-  const [messages] = await query.getChatMessagesQuery({ chatId });
+  const [messages] = await query.getChatMessagesQuery({
+    chatId,
+    skip,
+    take,
+  });
 
   return messages as MessageDB[];
 };
@@ -41,9 +51,13 @@ export const getAllUserChats = async ({ userId }: { userId: number }) => {
 export const getChatMessagesByChatId = async ({
   userId,
   chatId,
+  skip,
+  take,
 }: {
   userId: number;
   chatId: number;
+  skip: number | null;
+  take: number | null;
 }) => {
   if (!userId || !chatId) throw new Error("UserId or chatId is undefinded");
 
@@ -52,7 +66,11 @@ export const getChatMessagesByChatId = async ({
 
   if (!isAllowed) throw new Error("User is not in the chat");
 
-  const [rows] = await query.getChatMessagesQuery({ chatId });
+  const [rows] = await query.getChatMessagesQuery({
+    chatId,
+    skip,
+    take,
+  });
 
   return rows as (MessageDB & { username: string })[];
 };

@@ -107,5 +107,9 @@ export class EmitableWS<T> extends EventEmitter {
         console.log(err);
       }
     });
+
+    ws.on("close", () => {
+      this.emit("close-ws", { [typeName]: this.params });
+    });
   }
 }

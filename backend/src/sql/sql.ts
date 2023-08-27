@@ -70,7 +70,11 @@ WHERE (c.user_id1 = ? OR c.user_id2 = ?) AND (
     [arg.username, arg.userId, arg.userId],
   );
 
-export const getChatMessagesQuery = async (arg: { chatId: number }) =>
+export const getChatMessagesQuery = async (arg: {
+  chatId: number;
+  skip: number | null;
+  take: number | null;
+}) =>
   pool.query<(MessageDB & { username: string })[]>(
     `
 SELECT 
@@ -83,9 +87,9 @@ SELECT
 FROM telegraph.chat_messages m
 JOIN telegraph.users USING(user_id)
 WHERE chat_id = ?
-ORDER BY sent_at ASC;
+${arg.take !== null ? "ORDER BY message_id DESC LIMIT ?, ?;" : ";"}
 `,
-    [arg.chatId],
+    [arg.chatId, arg.skip, arg.take],
   );
 
 export const getAllUserChatsQuery = async (arg: { userId: number }) =>

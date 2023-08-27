@@ -2,31 +2,39 @@ import { RequestHandler } from "express";
 import * as chatService from "../services/chatService.js";
 
 export const getMessages: RequestHandler = async (req, res, next) => {
-  const user = req.user;
-  const anotherUser = req.params.username;
-
-  if (!user || !anotherUser) return next(new Error("Cannot get messages"));
-
-  const messages = await chatService
-    .getChatId({ userId: user.id, username: anotherUser })
-    .catch((err) => {
-      console.log(err);
-      return null;
-    });
-
-  if (!messages) return next(new Error("Cannot get messages"));
-
-  res.status(200).json({ success: true, data: { messages } });
+  throw new Error("Implemented getMessagesByChatId");
+  // const user = req.user;
+  // const anotherUser = req.params.username;
+  //
+  // if (!user || !anotherUser) return next(new Error("Cannot get messages"));
+  //
+  // const messages = await chatService
+  //   .getChatId({ userId: user.id, username: anotherUser })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     return null;
+  //   });
+  //
+  // if (!messages) return next(new Error("Cannot get messages"));
+  //
+  // res.status(200).json({ success: true, data: { messages } });
 };
 
 export const getMessagesByChatId: RequestHandler = async (req, res, next) => {
   const user = req.user;
-  const chatId = req.params.chatId;
+  const chatId = req.query.chatId;
+  const page = +(req.query.page ?? 1);
+  const numOfMessagesInPage = +(req.query.numOfMessages ?? 3);
 
   if (!user || !chatId) return next(new Error("Cannot get messages"));
 
   const messages = await chatService
-    .getChatMessagesByChatId({ userId: user.user_id, chatId: +chatId })
+    .getChatMessagesByChatId({
+      userId: user.user_id,
+      chatId: +chatId,
+      skip: numOfMessagesInPage * (page - 1),
+      take: numOfMessagesInPage,
+    })
     .catch((err) => {
       console.log(err);
       return null;

@@ -12,7 +12,7 @@ router.get(
 router.get("/all-chats", authController.protect, chatController.getChats);
 
 router.get(
-  "/messages/chat/:chatId",
+  "/messages-by-chat-id",
   authController.protect,
   chatController.getMessagesByChatId,
 );
