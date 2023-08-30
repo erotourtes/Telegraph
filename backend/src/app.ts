@@ -7,7 +7,11 @@ import cookieParser from "cookie-parser";
 const app: Express = express();
 
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: (origin: any, cb: any) => {
+    const whitelist = process.env.CLIENT_URL?.split(";") || [];
+    if (whitelist.indexOf(origin) !== -1) cb(null, true);
+    else cb(new Error("Not allowed by CORS"));
+  },
   credentials: true,
 };
 

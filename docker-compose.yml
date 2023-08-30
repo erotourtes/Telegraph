@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend # Path to the backend code
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      NODE_ENV: development
+      DB_HOST: database
+    depends_on:
+      - database # Ensure the database service is started first
+    # restart: unless-stoped
+
+  frontend:
+    build:
+      context: ./frontend/telegraph # Path to the frontend code
+      dockerfile: Dockerfile
+    ports:
+      - "3000:4173"
+    depends_on:
+      - backend # Ensure the backend service is started first
+    # restart: unless-stoped
+
+  database:
+    build:
+      context: ./backend/sql # Path to the frontend code
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: telegraph
+    ports:
+      - "3306:3306"
+    # volumes:
+    #   - mysql_data:/var/lib/mysql # Volume to persist data
+# volumes:
+#   mysql_data:

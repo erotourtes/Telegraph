@@ -1,6 +1,6 @@
--------------
+-- -----------
 -- CREATE CHAT 
--------------
+-- -----------
 USE `telegraph`;
 DROP procedure IF EXISTS `CREATE_CHAT`;
 
