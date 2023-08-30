@@ -1,11 +1,11 @@
 import { useContext, createContext } from "react";
 import AuthContext from "./AuthContext";
-import { UserI } from "@/interfaces";
+import { UserDBI } from "@/interfaces";
 
 export default createContext<{
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
-  user: null | UserI;
+  user: null | UserDBI;
 }>({
   isLoggedIn: false,
   setIsLoggedIn: (value: boolean) => {

@@ -7,12 +7,15 @@ export interface ChatI {
 }
 
 export interface UserI {
-  user_id: number;
   email: string;
   password: string;
   username: string;
   firstName: string;
   secondName: string;
+}
+
+export interface UserDBI extends UserI {
+  user_id: number;
 }
 
 export interface MessageI {

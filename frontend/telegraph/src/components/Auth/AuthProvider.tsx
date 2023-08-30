@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import AuthContext from "./AuthContext.ts";
 import { BASE_URL } from "../../constants.ts";
-import { UserI } from "@/interfaces.ts";
+import { UserDBI } from "@/interfaces.ts";
 
 const checkIfUserIsLoggedIn = async () => {
   const response = await fetch(`${BASE_URL}/api/v1/user/is-logged-in`, {
@@ -14,7 +14,7 @@ const checkIfUserIsLoggedIn = async () => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<null | UserI>(null);
+  const [user, setUser] = useState<null | UserDBI>(null);
 
   useEffect(() => {
     async function checkIfLoggedIn() {
