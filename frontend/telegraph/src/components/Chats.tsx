@@ -7,6 +7,7 @@ import { BASE_URL } from "@/constants";
 import { useAuth } from "./Auth/AuthContext";
 import { useHeight } from "./Hooks/useHeight";
 import { chats as styles } from "./Styles/object.ts";
+import { usePrevious } from "./Hooks/usePrevious.ts";
 
 const fetchLogout = async () => {
   const response = await fetch(`${BASE_URL}/api/v1/user/logout`, {
@@ -48,6 +49,45 @@ function Chats() {
 
   const { indicatorHeight, indicatorMargin } =
     getIndicatorProps(containerHeightRef);
+
+  const prevPos =
+    usePrevious<number>(
+      curChatPositionInLine * (indicatorHeight + indicatorMargin)
+    ) || 0;
+  const curPos = curChatPositionInLine * (indicatorHeight + indicatorMargin);
+
+  useEffect(() => {
+    const indicator = containerHeightRef.current?.childNodes[0] as
+      | HTMLDivElement
+      | undefined;
+    if (!indicator) return;
+
+    const intermediate = prevPos + (curPos - prevPos) / 3;
+
+    console.log(prevPos, intermediate, curPos);
+
+    const newspaperSpinning = [
+      { transform: `scaleY(1) translateY(${prevPos}px)` },
+      { transform: `scaleY(1.25) translateY(${intermediate}px)` },
+      {
+        transform: `scaleY(1) translateY(${curPos}px)`,
+      },
+    ];
+
+    const newspaperTiming = {
+      duration: 1300,
+      iterations: 1,
+      easing: "ease-in-out",
+      fill: "forwards",
+    };
+
+    indicator.style.transformOrigin = curPos < prevPos ? "bottom" : "top";
+
+    indicator.animate(
+      newspaperSpinning,
+      newspaperTiming as KeyframeAnimationOptions
+    );
+  }, [chatId]);
 
   return (
     <div style={styles.container}>
@@ -101,10 +141,10 @@ function Chats() {
                 width: "4px",
                 height: `${indicatorHeight}px`,
                 borderRadius: "10px",
-                transition: "transform 0.3s ease-in-out",
-                transform: `translateY(${
-                  curChatPositionInLine * (indicatorHeight + indicatorMargin)
-                }px)`,
+                // transition: "transform 0.3s ease-in-out",
+                // transform: `translateY(${
+                //   curChatPositionInLine * (indicatorHeight + indicatorMargin)
+                // }px)`,
                 backgroundColor: "orange",
               }}
             ></div>
