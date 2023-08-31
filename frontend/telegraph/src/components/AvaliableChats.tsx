@@ -23,7 +23,27 @@ interface Props {
   setChats: (chats: ChatI[]) => void;
 }
 
-function AvaliableChats({ setChatId: setCurrChatId, curChatId, chats, setChats }: Props) {
+const styles = {
+  chatDiv: {
+    backgroundColor: "red",
+    padding: "0.3rem",
+    margin: "0.5rem",
+    borderRadius: "10px",
+  },
+  curChatDiv: {
+    backgroundColor: "blue",
+    padding: "0.3rem",
+    margin: "0.5rem",
+    borderRadius: "10px",
+  },
+};
+
+function AvaliableChats({
+  setChatId: setCurrChatId,
+  curChatId,
+  chats,
+  setChats,
+}: Props) {
   useEffect(() => {
     async function getAllChats() {
       const {
@@ -35,24 +55,15 @@ function AvaliableChats({ setChatId: setCurrChatId, curChatId, chats, setChats }
     }
 
     getAllChats();
-  }, []);
+  }, []); // setting setChats as a dependency causes infinite loop
 
   const chatsList = chats.map((chat) => (
-    <li key={chat.chat_id}>
-      <p style={{
-        color: curChatId === chat.chat_id ? "red" : ""
-      }} onClick={() => setCurrChatId(chat.chat_id)}>{chat.name}</p>
-    </li>
+    <div style={curChatId == chat.chat_id ? styles.curChatDiv as React.CSSProperties : styles.chatDiv} key={chat.chat_id}>
+      <p onClick={() => setCurrChatId(chat.chat_id)}>{chat.name}</p>
+    </div>
   ));
 
-  return (
-    <>
-      <div>
-        <h1>Chats</h1>
-        <ul>{chatsList}</ul>
-      </div>
-    </>
-  );
+  return <>{chatsList}</>;
 }
 
 export default AvaliableChats;

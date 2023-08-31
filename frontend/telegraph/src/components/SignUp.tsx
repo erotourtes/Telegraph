@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { BASE_URL } from "../constants";
 import { UserI } from "../interfaces";
+import { form as styles } from "./Styles/object.ts";
 
 const fetchUserSignUp = async (usr: UserI) => {
   const response = await fetch(`${BASE_URL}/api/v1/user/signup`, {
     method: "POST",
-    credentials: 'include', // Needed to include the cookie
+    credentials: "include", // Needed to include the cookie
     headers: {
       "Content-Type": "application/json",
     },
@@ -26,7 +27,9 @@ function SignUp() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { data: {user} } = await fetchUserSignUp({
+    const {
+      data: { user },
+    } = await fetchUserSignUp({
       email,
       password,
       firstName,
@@ -34,7 +37,7 @@ function SignUp() {
       username,
     }).catch((err) => {
       console.log(err);
-      return { data: {user: null} };
+      return { data: { user: null } };
     });
 
     console.log(user);
@@ -42,77 +45,84 @@ function SignUp() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="first-name">First Name</label>
-        <input
-          required
-          type="text"
-          id="first-name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
+      <form style={styles.form as React.CSSProperties} onSubmit={handleSubmit}>
+        <div style={styles.div}>
+          <label htmlFor="first-name">First Name</label>
+          <input
+            required
+            type="text"
+            id="first-name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </div>
 
-        <br />
+        <div style={styles.div}>
+          <label htmlFor="last-name">Last Name</label>
+          <input
+            required
+            type="text"
+            id="last-name"
+            value={secondName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </div>
 
-        <label htmlFor="last-name">Last Name</label>
-        <input
-          required
-          type="text"
-          id="last-name"
-          value={secondName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
+        <div style={styles.div}>
+          <label htmlFor="username">Username</label>
+          <input
+            required
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
 
-        <br />
+        <div style={styles.div}>
+          <label htmlFor="email">Email</label>
+          <input
+            required
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
 
-        <label htmlFor="username">Username</label>
-        <input
-          required
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        <div style={styles.div}>
+          <label htmlFor="password">Password</label>
+          <input
+            required
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
 
-        <br />
+        <div style={styles.div}>
+          <label htmlFor="password">Confirm Password</label>
+          <input
+            required
+            type="password"
+            id="confirm-password"
+            value={passwordConfirmation}
+            onChange={(e) => setPasswordConfirmation(e.target.value)}
+          />
+        </div>
 
-        <label htmlFor="email">Email</label>
-        <input
-          required
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <br />
-
-        <label htmlFor="password">Password</label>
-        <input
-          required
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <br />
-
-        <label htmlFor="password">Confirm Password</label>
-        <input
-          required
-          type="password"
-          id="confirm-password"
-          value={passwordConfirmation}
-          onChange={(e) => setPasswordConfirmation(e.target.value)}
-        />
-        {password !== passwordConfirmation && <p>Passwords do not match</p>}
-
-        <br />
-
-        <button disabled={password !== passwordConfirmation} type="submit">
+        <button
+          style={styles.button}
+          disabled={password !== passwordConfirmation}
+          type="submit"
+        >
           Submit
         </button>
+
+        {password !== passwordConfirmation && (
+          <p style={styles.error}>Passwords do not match</p>
+        )}
       </form>
     </>
   );

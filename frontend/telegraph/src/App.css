@@ -1,0 +1,16 @@
+:root,
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.animate-height {
+  transform-origin: bottom;
+  animation: animate-height 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
+}

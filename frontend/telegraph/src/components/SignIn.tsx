@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BASE_URL } from "../constants.js";
 import { useAuth } from "./Auth/AuthContext.js";
+import { form as styles } from "./Styles/object.ts";
 
 const fetchUserLogIn = async (email: string, password: string) => {
   const response = await fetch(`${BASE_URL}/api/v1/user/login`, {
@@ -35,26 +36,49 @@ function SignIn() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      <form style={styles.form as React.CSSProperties} onSubmit={handleSubmit}>
+        <div style={styles.div}>
+          <label htmlFor="email">Email</label>
+          <input
+            style={styles.input}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
 
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div style={styles.div}>
+          <label htmlFor="password">Password</label>
+          <input
+            style={styles.input}
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
 
-        <button type="submit">Submit</button>
+        <button style={styles.button} type="submit">
+          Submit
+        </button>
 
-        {error && <p>{error}</p>}
+        {error && (
+          <div>
+            <p style={styles.error}>{error}</p>
+            {(email || password) && (
+              <button
+                style={styles.button}
+                onClick={() => {
+                  setEmail("");
+                  setPassword("");
+                }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        )}
       </form>
     </>
   );

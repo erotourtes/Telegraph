@@ -52,8 +52,8 @@ function CreateChat({ setIsCreatingMode, setCreatedChat }: Props) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="username">Username</label>
       <input
+        placeholder="Username"
         type="text"
         id="username"
         onChange={(e) => {
