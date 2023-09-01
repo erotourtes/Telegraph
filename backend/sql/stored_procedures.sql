@@ -28,4 +28,4 @@ END$$
 
 DELIMITER ;
 
-GRANT EXECUTE ON PROCEDURE telegraph.CREATE_CHAT TO 'app'@'localhost';
+GRANT EXECUTE ON PROCEDURE telegraph.CREATE_CHAT TO 'app'@'%';

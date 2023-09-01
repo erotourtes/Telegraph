@@ -12,7 +12,7 @@ then
 fi
 
 node ./replace.env.mjs
-docker-compose -f ./docker-compose.local.yml up --build
+docker-compose -f docker-compose.local.yml up --build
 
 rm ./docker-compose.local.yml
-# rm ./frontend/telegraph/.env
+rm ./backend/sql/telegraph_user.local.sql
