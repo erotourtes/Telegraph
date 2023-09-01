@@ -52,9 +52,10 @@ export const getExpiryJWTDate = () => {
 };
 
 export const parseCookies = (cookies: string) =>
-  cookies.split(";").reduce(
+  cookies.split(";").filter((v) => v).reduce(
     (acc, cookie) => {
       const [key, value] = cookie.split("=");
+      if (!key || !value) return acc;
       acc[key.trim()] = value.trim();
       return acc;
     },

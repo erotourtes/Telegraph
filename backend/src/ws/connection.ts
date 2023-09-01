@@ -75,7 +75,10 @@ export const onConnect = async (
   const cookies = parseCookies(req.headers.cookie || "");
   const user = cookies.jwt ? await getUserFromJWT(cookies.jwt) : null;
 
-  if (!user) throw new Error("User is not defined in websocket connection");
+  if (!user) {
+    console.log("User is not defined in websocket connection");
+    return;
+  }
 
   const emitableWS = new EmitableWS<UserDB>(ws, user, "user");
 
