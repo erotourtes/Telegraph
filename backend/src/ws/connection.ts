@@ -1,5 +1,5 @@
 import { IncomingMessage } from "http";
-import { UserDB } from "../sql/types.js";
+import { ChatDB, UserDB } from "../sql/types.js";
 import { EmitableWS, getUserFromJWT, parseCookies } from "../Utils/utils.js";
 import { WebSocket } from "ws";
 import * as chatService from "../services/chatService.js";
@@ -43,14 +43,29 @@ const onMessage = {
     );
   },
 
-  "chat-created": async (msg: any) => {
-    // const { chat_id, user_id, user } = msg;
-    console.log("chat-created", msg);
+  "chat-created": async (
+    args: ChatDB & { user: UserDB }, // user who created the chat
+  ) => {
+    const otherUserId =
+      args.user_id1 === args.user.user_id ? args.user_id2 : args.user_id1;
+
+    const otherUserWS = connections.get(otherUserId);
+    if (!otherUserWS) return;
+
+    const chat: ChatDB = { ...args };
+    otherUserWS.send(
+      JSON.stringify({
+        type: "chat-notify",
+        data: {
+          chat,
+        },
+      }),
+    );
   },
   "close-ws": async (msg: any) => {
     console.log("connection ws is closed", msg);
     connections.delete(msg.user.user_id);
-  }
+  },
 };
 
 export const onConnect = async (
