@@ -22,14 +22,14 @@ export interface MessageDB extends RowDataPacket {
   content: string;
   chat_id: number;
   user_id: number;
-  sent_at: Date;
+  sent_at: string;
 }
 
 export interface ChatDB extends RowDataPacket {
   chat_id: number;
   user_id1: number;
   user_id2: number;
-  created_at: Date;
+  created_at: string;
   name: string;
 }
 
