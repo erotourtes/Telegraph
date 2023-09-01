@@ -30,7 +30,7 @@ class EventEmitter<E extends string> {
 }
 
 type SendType = "message-sent" | "chat-created";
-type ReceiveType = "message-notify";
+type ReceiveType = "message-notify" | "chat-notify";
 class EmitableWS extends EventEmitter<ReceiveType> {
   private ws: WebSocket | null = null; // lateinit
 

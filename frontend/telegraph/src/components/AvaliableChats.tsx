@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BASE_URL } from "../constants";
 import { ChatI } from "../interfaces";
+import ws from "@/WS/WS";
 
 const fetchAllChats = async () => {
   const response = await fetch(`${BASE_URL}/api/v1/chat/all-chats`, {
@@ -57,8 +58,28 @@ function AvaliableChats({
     getAllChats();
   }, []); // setting setChats as a dependency causes infinite loop
 
+  // for dynamic chat creation
+  useEffect(() => {
+    const cb = ({ chat }: { chat: ChatI }) => {
+      setChats([...chats, chat]);
+    };
+
+    ws.on("chat-notify", cb);
+
+    return () => {
+      ws.removeListener("chat-notify", cb);
+    };
+  }, []);
+
   const chatsList = chats.map((chat) => (
-    <div style={curChatId == chat.chat_id ? styles.curChatDiv as React.CSSProperties : styles.chatDiv} key={chat.chat_id}>
+    <div
+      style={
+        curChatId == chat.chat_id
+          ? (styles.curChatDiv as React.CSSProperties)
+          : styles.chatDiv
+      }
+      key={chat.chat_id}
+    >
       <p onClick={() => setCurrChatId(chat.chat_id)}>{chat.name}</p>
     </div>
   ));

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AvaliableChats from "./AvaliableChats";
 import CreateChat from "./CreateChatForm";
 import { ChatI } from "../interfaces";

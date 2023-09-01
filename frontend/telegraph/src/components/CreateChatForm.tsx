@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BASE_URL } from "../constants";
 import { ChatI } from "../interfaces";
+import ws from "@/WS/WS";
 
 interface Props {
   setIsCreatingMode: (isCreatingMode: boolean) => void;
@@ -28,6 +29,10 @@ const createChatFetch = async (username: string) => {
   return response.json();
 };
 
+const notifyAboutNewChat = ({ chat }: { chat: ChatI }) => {
+  ws.send("chat-created", chat);
+};
+
 function CreateChat({ setIsCreatingMode, setCreatedChat }: Props) {
   const [username, setUsername] = useState("");
   const [isSuccess, setIsSucces] = useState<boolean | null>(null);
@@ -47,6 +52,7 @@ function CreateChat({ setIsCreatingMode, setCreatedChat }: Props) {
     if (success) {
       setIsCreatingMode(false);
       setCreatedChat(data.chat);
+      notifyAboutNewChat(data);
     }
   };
 
