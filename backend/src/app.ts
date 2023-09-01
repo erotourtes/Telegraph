@@ -3,6 +3,7 @@ import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
 import chatRouter from "./routes/chatRoute.js";
 import cookieParser from "cookie-parser";
+import errorController from "./controllers/errorController.js";
 
 const app: Express = express();
 
@@ -25,5 +26,7 @@ app.use("/api/v1/chat", chatRouter);
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server!!!!");
 });
+
+app.use(errorController);
 
 export default app;
