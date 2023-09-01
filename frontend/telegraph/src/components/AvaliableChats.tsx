@@ -99,7 +99,9 @@ function AvaliableChats({
       }
       key={chat.chat_id}
     >
-      <p onClick={() => setCurrChatId(chat.chat_id)}>{chat.name} {isUnreadMessages(chat.chat_id) ?? "New messages!"}</p>
+      <p onClick={() => setCurrChatId(chat.chat_id)}>
+        {chat.name} {isUnreadMessages(chat.chat_id) ?? "New messages!"}
+      </p>
     </div>
   ));
 

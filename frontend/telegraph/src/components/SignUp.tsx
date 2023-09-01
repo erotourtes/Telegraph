@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BASE_URL } from "../constants";
 import { UserI } from "../interfaces";
 import { form as styles } from "./Styles/object.ts";
+import { useAuth } from "./Auth/AuthContext.ts";
 
 const fetchUserSignUp = async (usr: UserI) => {
   const response = await fetch(`${BASE_URL}/api/v1/user/signup`, {
@@ -23,6 +24,7 @@ function SignUp() {
   const [firstName, setFirstName] = useState("");
   const [secondName, setLastName] = useState("");
   const [username, setUsername] = useState("");
+  const auth = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,6 +43,7 @@ function SignUp() {
     });
 
     console.log(user);
+    if (user) auth.setIsLoggedIn(true);
   };
 
   return (
