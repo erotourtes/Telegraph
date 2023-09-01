@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       window.removeEventListener("load", checkIfLoggedIn);
     };
-  }, [setIsLoggedIn]);
+  }, [isLoggedIn]);
   // }); // infinite loop with setUser()
 
   return (
