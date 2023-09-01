@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { BASE_URL } from "../constants";
 import { ChatI } from "../interfaces";
 import ws from "@/WS/WS";
+import { useChat } from "./Chat/ChatContext";
+import { useAuth } from "./Auth/AuthContext";
 
 const fetchAllChats = async () => {
   const response = await fetch(`${BASE_URL}/api/v1/chat/all-chats`, {
@@ -45,6 +47,23 @@ function AvaliableChats({
   chats,
   setChats,
 }: Props) {
+  const allmessages = useChat();
+  const { user } = useAuth();
+
+  const isUnreadMessages = (chatId: number) => {
+    const messagesForChat = allmessages.messages[chatId];
+    if (!messagesForChat) return false;
+
+    const lastPage = messagesForChat[1];
+    if (!lastPage) return false;
+
+    const lastMessage = lastPage[lastPage.length - 1];
+
+    if (!lastMessage) return false;
+
+    return lastMessage.user_id !== user?.user_id && !lastMessage.isRead;
+  };
+
   useEffect(() => {
     async function getAllChats() {
       const {
@@ -80,7 +99,7 @@ function AvaliableChats({
       }
       key={chat.chat_id}
     >
-      <p onClick={() => setCurrChatId(chat.chat_id)}>{chat.name}</p>
+      <p onClick={() => setCurrChatId(chat.chat_id)}>{chat.name} {isUnreadMessages(chat.chat_id) ?? "New messages!"}</p>
     </div>
   ));
 

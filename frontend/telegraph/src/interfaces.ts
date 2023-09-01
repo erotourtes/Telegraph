@@ -29,3 +29,7 @@ export interface MessageI {
 export interface MessageWithUserI extends MessageI {
   username: string;
 }
+
+export interface MessageInfo extends MessageWithUserI {
+  isRead: boolean;
+}

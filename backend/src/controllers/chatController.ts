@@ -23,8 +23,12 @@ export const getMessages: RequestHandler = async (req, res, next) => {
 export const getMessagesByChatId: RequestHandler = async (req, res, next) => {
   const user = req.user;
   const chatId = req.query.chatId;
-  const page = +(req.query.page ?? 1);
-  const numOfMessagesInPage = +(req.query.numOfMessages ?? 3);
+  const skip = +(req.query.skip ?? 0);
+  const numOfMessagesInPage = req.query.numOfMessages;
+
+  if (numOfMessagesInPage === undefined)
+    return next(new Error("numOfMessages is not defined"));
+  if (chatId === undefined) return next(new Error("chatId is not defined"));
 
   if (!user || !chatId) return next(new Error("Cannot get messages"));
 
@@ -32,8 +36,8 @@ export const getMessagesByChatId: RequestHandler = async (req, res, next) => {
     .getChatMessagesByChatId({
       userId: user.user_id,
       chatId: +chatId,
-      skip: numOfMessagesInPage * (page - 1),
-      take: numOfMessagesInPage,
+      skip,
+      take: +numOfMessagesInPage,
     })
     .catch((err) => {
       console.log(err);
