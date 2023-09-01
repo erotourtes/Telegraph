@@ -51,7 +51,7 @@ function Chats() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.left}>
+      <div style={styles.left as React.CSSProperties}>
         <h1
           style={styles.text as React.CSSProperties}
           onClick={() => setIsHiddenButtons(!isHiddenButtons)}

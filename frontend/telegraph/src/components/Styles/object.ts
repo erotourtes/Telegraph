@@ -36,12 +36,14 @@ export const chats = {
     backgroundColor: "red",
     gridColumn: "1 / 2",
     height: "100vh",
+    overflowY: "scroll",
   },
   right: {
     backgroundColor: "blue",
     gridColumn: "2 / end",
     height: "100vh",
     position: "relative",
+    overflowY: "scroll",
   },
   text: {
     textAlign: "center",

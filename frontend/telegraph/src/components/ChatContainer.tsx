@@ -13,32 +13,40 @@ const fetchSendMessage = async (chatId: number, content: string) => {
 const styles = {
   input: {
     width: "80%",
-    position: "absolute",
-    bottom: "2rem",
     height: "2rem",
-    left: "50%",
-    transform: "translateX(-50%)",
     borderRadius: "10px",
   },
   sendButton: {
-    position: "absolute",
-    bottom: "2rem",
-    right: "2rem",
     height: "2.3rem",
     borderRadius: "10px",
   },
+  group: {
+    position: "sticky",
+    bottom: "1rem",
+    display: "flex",
+    justifyContent: "center",
+  },
+  messages: { minHeight: "calc(100vh - 2rem - 1rem)", marginBottom: "2rem" },
 };
 
 function ChatContainer({ chatId }: Props) {
   const [message, setMessage] = useState<string>("");
+  const sendMessage = () => {
+    fetchSendMessage(chatId, message).then(() => setMessage(""));
+  };
 
   return (
     <>
-      {chatId !== 0 && <ChatMessges chatId={chatId} />}
+      <div style={styles.messages}>
+        {chatId !== 0 && <ChatMessges chatId={chatId} />}
+      </div>
 
       {chatId !== 0 && (
-        <>
+        <div style={styles.group as React.CSSProperties}>
           <input
+            onKeyDown={(e) => {
+              if (e.key === "Enter") sendMessage();
+            }}
             style={styles.input as React.CSSProperties}
             type="text"
             value={message}
@@ -46,13 +54,11 @@ function ChatContainer({ chatId }: Props) {
           />
           <button
             style={styles.sendButton as React.CSSProperties}
-            onClick={() => {
-              fetchSendMessage(chatId, message).then(() => setMessage(""));
-            }}
+            onClick={sendMessage}
           >
             Send
           </button>
-        </>
+        </div>
       )}
     </>
   );
