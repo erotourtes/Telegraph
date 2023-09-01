@@ -88,7 +88,7 @@ function AvaliableChats({
     return () => {
       ws.removeListener("chat-notify", cb);
     };
-  }, []);
+  }, [chats]);
 
   const chatsList = chats.map((chat) => (
     <div
