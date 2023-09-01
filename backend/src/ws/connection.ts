@@ -73,7 +73,10 @@ export const onConnect = async (
   req: IncomingMessage & { user: UserDB },
 ) => {
   const cookies = parseCookies(req.headers.cookie || "");
-  const user = cookies.jwt ? await getUserFromJWT(cookies.jwt) : null;
+  const user = cookies.jwt ? await getUserFromJWT(cookies.jwt).catch((err) => {
+    console.log(err);
+    return null;
+  }) : null;
 
   if (!user) {
     console.log("User is not defined in websocket connection");
