@@ -28,10 +28,6 @@ const getMessagesForPage = (
   return chatMessages[curPage] || [];
 };
 
-const getMessagesForFirstPage = (messages: AllMessages, chatId: number) => {
-  return getMessagesForPage(messages, chatId, 1);
-};
-
 const fetchChatMessages = async (
   allMessages: AllMessages,
   chatId: number,
@@ -51,7 +47,7 @@ const fetchChatMessages = async (
   }
 
   const messagesInFirstPage = getMessagesForPage(allMessages, chatId, 1).length;
-  const skip = messagesInFirstPage + (curPage - 1) * PAGE_SIZE;
+  const skip = messagesInFirstPage + (curPage - 2) * PAGE_SIZE;
 
   const response = await fetch(
     `${BASE_URL}/api/v1/chat/messages-by-chat-id?chatId=${chatId}&skip=${skip}&numOfMessages=${PAGE_SIZE}`,
@@ -68,7 +64,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
 
   const addMessagesToPage = useCallback(
     (chatId: number, curPage: number, newMessages: MessageWithUserI[]) => {
-      if (getMessagesForFirstPage(messages, chatId).length !== 0) return;
+      if (getMessagesForPage(messages, chatId, curPage).length !== 0) return;
 
       const newMessagesInfo = newMessages.map((message) => ({
         ...message,
@@ -96,7 +92,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
 
   const updateMessagesForPage = useCallback(
     async (chatId: number, curPage: number) => {
-      if (getMessagesForFirstPage(messages, chatId).length !== 0) return;
+      if (getMessagesForPage(messages, chatId, curPage).length !== 0) return;
 
       console.log("fetching messages for page: ", curPage);
       const response = await fetchChatMessages(messages, chatId, curPage);
